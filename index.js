@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 const upstream = 'https://nhentai.com';
 
@@ -110,7 +111,7 @@ function replace_response_text(response, upstream_domain, host_name) {
     return text;
 }
 
-let server = app.listen(10000, function () {
+let server = app.listen(PORT, function () {
 
     let host = server.address().address;
     let port = server.address().port;
