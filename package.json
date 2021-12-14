@@ -1,0 +1,9 @@
+{
+  "name": "ntai-p",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "express": "^4.17.1"
+  }
+}
