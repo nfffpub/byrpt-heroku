@@ -46,9 +46,11 @@ function incomeHeaderToMap(header) {
 }
 
 function proxyReq(method, url, headers, connection_upgrade, upstream_domain, url_hostname, res) {
+    console.log(method + "\n" + url + "\n" + headers);
     axios({method : method,
     url : url,
     headers : headers}).then(function (original_response) {
+        console.log(JSON.stringify(original_response.data))
         if (connection_upgrade && connection_upgrade.toLowerCase() === "websocket") {
             res.sendStatus(original_response.status);
             res.set(original_response.headers);
@@ -78,6 +80,7 @@ function proxyReq(method, url, headers, connection_upgrade, upstream_domain, url
         }
 
         setExpressHeaders(res, new_response_headers);
+        console.log(original_text);
         res.status(status).end(original_text);
     }).catch(e =>{
         console.error(e);
