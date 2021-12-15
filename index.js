@@ -44,13 +44,13 @@ app.get('*', function (request, res) {
     let method = request.method;
     //let new_request_headers = request.headers;
     let new_request_headers = {
-        'Accept' : request.headers.accept,
-        'Accept-Language' : request.headers["accept-language"],
+        'Accept' : request.headers.accept ? request.headers.accept : '',
+        'Accept-Language' : request.headers["accept-language"] ? request.headers["accept-language"] : '',
         'Host' : url.host,
         'Referer' : referURl,
-        'Cookie' : request.headers.cookie,
-        'Connection' : request.headers.connection,
-        'User-Agent' : request.headers["user-agent"]
+        'Cookie' : request.headers.cookie ? request.headers.cookie : '',
+        'Connection' : request.headers.connection ? request.headers.connection : '',
+        'User-Agent' : request.headers["user-agent"] ? request.headers["user-agent"] : ''
     };
 
     //new_request_headers.host = url.host;
