@@ -1,9 +1,11 @@
 const express = require('express');
 const axios = require('axios');
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-const upstream = 'https://nhentai.com';
+const PORT = process.env.PORT || 8100;
+const HOST = process.env.IP || "0.0.0.0";
+
+const upstream = 'https://nhentai.net';
 
 const matchKey = 'nhentai';
 
@@ -32,6 +34,12 @@ app.get('*', function (request, res) {
 
     let method = request.method;
     let new_request_headers = request.headers;
+    // let new_request_headers = {
+    //     'Accept' : request.headers.accept,
+    //     'Accept-Language' : request.headers["accept-language"],
+    //     'Host' : url.host,
+    //     'referer' : "",
+    // };
 
     new_request_headers.host = url.host;
     new_request_headers.referer = "";
@@ -41,65 +49,62 @@ app.get('*', function (request, res) {
     proxyReq(method, url.href, new_request_headers, connection_upgrade, upstream_domain, url_hostname, res);
 })
 
-function incomeHeaderToMap(header) {
-    return new Map(Object.entries(JSON.parse(JSON.stringify(header))))
-}
-
 function proxyReq(method, url, headers, connection_upgrade, upstream_domain, url_hostname, res) {
-    console.log(method + "\n" + url + "\n" + headers);
-    axios({method : method,
-    url : url,
-    headers : headers}).then(function (original_response) {
-        console.log(JSON.stringify(original_response.data))
+    console.log(method + " " + url + " " + headers);
+    axios({
+        method: method,
+        url: url,
+        headers: headers,
+        responseType: 'arraybuffer'
+    }).then(function (original_response) {
         if (connection_upgrade && connection_upgrade.toLowerCase() === "websocket") {
-            res.sendStatus(original_response.status);
-            res.set(original_response.headers);
-            res.send(original_response.data);
+            setExpressHeaders(res, original_response.headers);
+            res.status(original_response.status).end(original_response.data);
         }
 
         let original_text;
-        let new_response_headers = incomeHeaderToMap(original_response.headers);
+        let new_response_headers = original_response.headers;
         let status = original_response.status;
 
-        new_response_headers.set('access-control-allow-origin', '*');
-        new_response_headers.set('access-control-allow-credentials', true);
-        new_response_headers.delete('content-security-policy');
-        new_response_headers.delete('content-security-policy-report-only');
-        new_response_headers.delete('clear-site-data');
+        new_response_headers['access-control-allow-origin'] = '*';
+        new_response_headers['access-control-allow-credentials'] = true;
+        new_response_headers['content-security-policy'] = undefined;
+        new_response_headers['content-security-policy-report-only'] = undefined;
+        new_response_headers['clear-site-data'] = undefined;
 
-        if (new_response_headers.get("x-pjax-url")) {
-            new_response_headers.set("x-pjax-url", new_response_headers.get("x-pjax-url").replace("//" + upstream_domain, "//" + url_hostname));
+        if (new_response_headers["x-pjax-url"] !== undefined) {
+            new_response_headers["x-pjax-url"] = new_response_headers["x-pjax-url"].replace("//" + upstream_domain, "//" + url_hostname);
         }
 
 
-        const content_type = new_response_headers.get('content-type');
+        const content_type = new_response_headers['content-type'];
         if (content_type != null && content_type.includes('text/html')) {
             original_text = replace_response_text(original_response, upstream_domain, url_hostname);
         } else {
-            original_text = original_response.data
+            original_text = original_response.data;
         }
 
         setExpressHeaders(res, new_response_headers);
-        console.log(original_text);
+        console.log(typeof original_text);
         res.status(status).end(original_text);
-    }).catch(e =>{
+
+    }).catch(e => {
         console.error(e);
     });
 }
 
 function setExpressHeaders(res, headers) {
-    headers.forEach((k, v) =>{
+    Object.entries(headers).forEach((k) => {
         try {
-            res.set(k, v);
-        }
-        catch (e) {
+            res.set(k[0], k[1]);
+        } catch (e) {
 
         }
     })
 }
 
 function replace_response_text(response, upstream_domain, host_name) {
-    let text = response.data;
+    let text = new TextDecoder("utf-8").decode(response.data);
 
     function convert(match) {
         if (match.includes(matchKey)) {
@@ -114,7 +119,7 @@ function replace_response_text(response, upstream_domain, host_name) {
     return text;
 }
 
-let server = app.listen(PORT, function () {
+let server = app.listen(PORT, HOST, function () {
 
     let host = server.address().address;
     let port = server.address().port;
