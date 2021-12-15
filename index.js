@@ -62,7 +62,7 @@ app.get('*', function (request, res) {
 })
 
 function proxyReq(method, url, headers, connection_upgrade, upstream_domain, url_hostname, res) {
-    console.log(method + " " + url + " " + headers);
+    console.log(method + " " + url + " " + JSON.stringify(headers));
     axios({
         method: method,
         url: url,
@@ -97,7 +97,6 @@ function proxyReq(method, url, headers, connection_upgrade, upstream_domain, url
         }
 
         setExpressHeaders(res, new_response_headers);
-        console.log(typeof original_text);
         res.status(status).end(original_text);
 
     }).catch(e => {
