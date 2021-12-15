@@ -1,9 +1,11 @@
 const express = require('express');
 const axios = require('axios');
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-const upstream = 'https://nhentai.com';
+const PORT = process.env.PORT || 8100;
+const HOST = process.env.IP || "0.0.0.0";
+
+const upstream = 'https://nhentai.net';
 
 const matchKey = 'nhentai';
 
