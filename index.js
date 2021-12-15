@@ -32,7 +32,7 @@ app.get('*', function (request, res) {
 
     let referURl = '';
     let origin_referer = request.headers.referer;
-    if (!origin_referer) {
+    if (origin_referer) {
         let refererUrlPart = origin_referer.split(proxyPart);
         if (refererUrlPart.length === 2) {
             referURl = new URL(decodeURIComponent(reqUrlPart[1])).href;
