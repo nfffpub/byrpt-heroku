@@ -13,6 +13,13 @@ const proxyPart = 'nh_p_path/';
 
 const upstream_path = '/';
 
+const joinJS = '<script>' +
+' var divObj=document.createElement("div"); ' +
+' divObj.innerHTML="防封导航页 https://nfff.pages.dev";' +
+' var first=document.body.firstChild;' +
+' document.body.insertBefore(divObj,first);' + 
+' </script>';
+
 app.get('*', function (request, res) {
     let reqUrl = "https://" + request.headers.host + request.url;
     let reqUrlObj = new URL(reqUrl);
@@ -126,6 +133,9 @@ function replace_response_text(response, upstream_domain, host_name) {
 
     let re = new RegExp('(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]', 'g')
     text = text.replace(re, convert);
+    
+    let alert = new RegExp('</body>', 'g');
+    text = text.replace(alert, joinJS + '</body>');
 
     return text;
 }
