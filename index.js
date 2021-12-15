@@ -1,11 +1,9 @@
 const express = require('express');
 const axios = require('axios');
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-const PORT = process.env.PORT || 8100;
-const HOST = process.env.IP || "0.0.0.0";
-
-const upstream = 'https://nhentai.net';
+const upstream = 'https://nhentai.com';
 
 const matchKey = 'nhentai';
 
@@ -30,19 +28,31 @@ app.get('*', function (request, res) {
         url = new URL(decodeURIComponent(reqUrlPart[1]));
     }
 
+    let referURl = '';
+    let origin_referer = request.headers.referer;
+    if (!origin_referer) {
+        let refererUrlPart = origin_referer.split(proxyPart);
+        if (refererUrlPart.length === 2) {
+            referURl = new URL(decodeURIComponent(reqUrlPart[1])).href;
+        }
+    }
+
     let upstream_domain = url.host;
 
     let method = request.method;
-    let new_request_headers = request.headers;
-    // let new_request_headers = {
-    //     'Accept' : request.headers.accept,
-    //     'Accept-Language' : request.headers["accept-language"],
-    //     'Host' : url.host,
-    //     'referer' : "",
-    // };
+    //let new_request_headers = request.headers;
+    let new_request_headers = {
+        'Accept' : request.headers.accept,
+        'Accept-Language' : request.headers["accept-language"],
+        'Host' : url.host,
+        'Referer' : referURl,
+        'Cookie' : request.headers.cookie,
+        'Connection' : request.headers.connection,
+        'User-Agent' : request.headers["user-agent"]
+    };
 
-    new_request_headers.host = url.host;
-    new_request_headers.referer = "";
+    //new_request_headers.host = url.host;
+    //new_request_headers.referer = "";
 
     let connection_upgrade = new_request_headers.upgrade;
 
