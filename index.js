@@ -50,8 +50,8 @@ function proxyHandler(request, res) {
     let upstream_domain = url.host;
 
     let method = request.method;
-    //let new_request_headers = request.headers;
-    let new_request_headers = {
+    let new_request_headers = request.headers;
+    /*let new_request_headers = {
         'Accept' : request.headers.accept ? request.headers.accept : '',
         'Accept-Language' : request.headers["accept-language"] ? request.headers["accept-language"] : '',
         'Host' : url.host,
@@ -59,9 +59,8 @@ function proxyHandler(request, res) {
         'Cookie' : request.headers.cookie ? request.headers.cookie : '',
         'Connection' : request.headers.connection ? request.headers.connection : '',
         'User-Agent' : request.headers["user-agent"] ? request.headers["user-agent"] : ''
-    };
-    
-    console.log(request.headers.cookie);
+    };*/
+    new_request_headers.referer = referURl;
 
     //new_request_headers.host = url.host;
     //new_request_headers.referer = "";
@@ -127,7 +126,6 @@ function setExpressHeaders(res, headers) {
 
 function replace_response_text(response, upstream_domain, host_name) {
     let text = new TextDecoder("utf-8").decode(response.data);
-    console.log(text);
 
     function convert(match) {
         if (match.includes(matchKey)) {
