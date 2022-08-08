@@ -85,6 +85,7 @@ function proxyReq(method, url, headers, connection_upgrade, upstream_domain, url
         let original_text;
         let new_response_headers = original_response.headers;
         let status = original_response.status;
+        console.log(original_response);
 
         new_response_headers['access-control-allow-origin'] = '*';
         new_response_headers['access-control-allow-credentials'] = true;
