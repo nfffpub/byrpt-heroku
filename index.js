@@ -14,6 +14,14 @@ const proxyPart = 'pt_path/';
 const upstream_path = '/';
 
 app.get('*', function (request, res) {
+    proxyHandler(request,res);
+})
+
+app.post('*', function (request, res) {
+    proxyHandler(request,res);
+})
+
+function proxyHandler(request, res) {
     let reqUrl = "https://" + request.headers.host + request.url;
     let reqUrlObj = new URL(reqUrl);
     let url_hostname = reqUrlObj.host;
@@ -59,7 +67,7 @@ app.get('*', function (request, res) {
     let connection_upgrade = new_request_headers.upgrade;
 
     proxyReq(method, url.href, new_request_headers, connection_upgrade, upstream_domain, url_hostname, res);
-})
+}
 
 function proxyReq(method, url, headers, connection_upgrade, upstream_domain, url_hostname, res) {
     console.log(method + " " + url + " " + JSON.stringify(headers));
