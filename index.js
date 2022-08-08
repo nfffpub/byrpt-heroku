@@ -61,14 +61,15 @@ function proxyHandler(request, res) {
         'User-Agent' : request.headers["user-agent"] ? request.headers["user-agent"] : ''
     };*/
     new_request_headers.host = url.host;
-    /*new_request_headers["x-real-ip"] = '';
+    new_request_headers["x-real-ip"] = '';
     new_request_headers["x-forwarded-for"] = '';
     new_request_headers["remote-host"] = '';
     new_request_headers["cf-ray"] = '';
     new_request_headers["cf-visitor"] = '';
     new_request_headers["cf-connecting-ip"] = '';
     new_request_headers["cf-ipcountry"] = '';
-    new_request_headers["cdn-loop"] = '';*/
+    new_request_headers["cdn-loop"] = '';
+    new_request_headers["origin"] = '';
     new_request_headers.referer = referURl;
     
 
@@ -77,14 +78,15 @@ function proxyHandler(request, res) {
 
     let connection_upgrade = new_request_headers.upgrade;
 
-    proxyReq(method, url.href, new_request_headers, connection_upgrade, upstream_domain, url_hostname, res);
+    proxyReq(method, url.href, new_request_headers, request.data, connection_upgrade, upstream_domain, url_hostname, res);
 }
 
-function proxyReq(method, url, headers, connection_upgrade, upstream_domain, url_hostname, res) {
-    console.log(method + " " + url + " " + JSON.stringify(headers));
+function proxyReq(method, url, headers, data, connection_upgrade, upstream_domain, url_hostname, res) {
+    console.log(method + " " + url + " " + JSON.stringify(headers) + " data: " + data);
     axios({
         method: method,
         url: url,
+        data: data,
         headers: headers,
         responseType: 'arraybuffer'
     }).then(function (original_response) {
