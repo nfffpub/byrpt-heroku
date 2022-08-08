@@ -60,6 +60,8 @@ function proxyHandler(request, res) {
         'Connection' : request.headers.connection ? request.headers.connection : '',
         'User-Agent' : request.headers["user-agent"] ? request.headers["user-agent"] : ''
     };
+    
+    console.log(request.headers.cookie);
 
     //new_request_headers.host = url.host;
     //new_request_headers.referer = "";
