@@ -61,14 +61,14 @@ function proxyHandler(request, res) {
         'User-Agent' : request.headers["user-agent"] ? request.headers["user-agent"] : ''
     };*/
     new_request_headers.host = url.host;
-    new_request_headers["x-real-ip"] = '';
+    /*new_request_headers["x-real-ip"] = '';
     new_request_headers["x-forwarded-for"] = '';
     new_request_headers["remote-host"] = '';
     new_request_headers["cf-ray"] = '';
     new_request_headers["cf-visitor"] = '';
     new_request_headers["cf-connecting-ip"] = '';
     new_request_headers["cf-ipcountry"] = '';
-    new_request_headers["cdn-loop"] = '';
+    new_request_headers["cdn-loop"] = '';*/
     new_request_headers.referer = referURl;
     
 
