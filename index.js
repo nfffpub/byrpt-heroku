@@ -78,7 +78,7 @@ function proxyHandler(request, res) {
 
     let connection_upgrade = new_request_headers.upgrade;
 
-    proxyReq(method, url.href, new_request_headers, request.data, connection_upgrade, upstream_domain, url_hostname, res);
+    proxyReq(method, url.href, new_request_headers, request.body, connection_upgrade, upstream_domain, url_hostname, res);
 }
 
 function proxyReq(method, url, headers, data, connection_upgrade, upstream_domain, url_hostname, res) {
