@@ -127,6 +127,7 @@ function setExpressHeaders(res, headers) {
 
 function replace_response_text(response, upstream_domain, host_name) {
     let text = new TextDecoder("utf-8").decode(response.data);
+    console.log(text);
 
     function convert(match) {
         if (match.includes(matchKey)) {
